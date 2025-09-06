@@ -1,12 +1,5 @@
 # 블록체인이란?
 
-영역 · 자원: 프로그래밍 (https://www.notion.so/17f314bee1018155a3d4e64dbcc5a213?pvs=21)
-고정하기: No
-태그: Blockchain
-블로그 게시: No
-slug: what-is-blockchain
-프로젝트: 블록체인 강의 (https://www.notion.so/261314bee1018064b631f8b8ea6e6767?pvs=21)
-
 ## 블록체인이란? 어원으로 풀어보는 개념
 
 블록체인(Blockchain)은 말 그대로 **'블록(Block)'을 '사슬(Chain)'처럼 연결한 것**을 의미합니다. 이 어원을 이해하면 블록체인의 핵심 개념을 쉽게 파악할 수 있습니다. 🧐

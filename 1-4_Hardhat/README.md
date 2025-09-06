@@ -1,8 +1,5 @@
 # 실무 개발 환경 구축: Hardhat
 
-태그: Blockchain, Hardhat, Metamask, Development Environment
-프로젝트: 블록체인 강의
-
 ## 📜 들어가며: 왜 Hardhat을 사용할까?
 
 스마트 컨트랙트를 개발하고, 테스트하며, 배포하는 전체 과정을 효율적으로 관리하기 위해서는 전문적인 개발 도구가 필수적입니다. **Hardhat**은 이더리움 소프트웨어 개발을 위한 강력하고 유연한 개발 환경 프레임워크입니다.

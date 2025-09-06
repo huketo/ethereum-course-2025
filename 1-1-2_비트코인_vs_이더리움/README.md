@@ -1,10 +1,5 @@
 # 비트코인 vs 이더리움
 
-고정하기: No
-태그: Blockchain
-블로그 게시: No
-slug: bitcoin-vs-ethereum
-
 ## 합의 알고리즘 비교:
 
 ### ⛏️ 비트코인: 작업증명 (Proof of Work) 합의 과정

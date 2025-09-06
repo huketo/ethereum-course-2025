@@ -1,8 +1,5 @@
 # 이더리움 확장성 솔루션: 레이어2 롤업
 
-태그: Blockchain, Layer2, Rollup
-프로젝트: 블록체인 강의
-
 ##  congested-ethereum.svg
 
 ![congested-ethereum.svg](congested-ethereum.svg)

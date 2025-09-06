@@ -1,8 +1,5 @@
 # Solidity 프로그래밍 핵심
 
-태그: Blockchain, Solidity, Smart Contract
-프로젝트: 블록체인 강의
-
 ## 📜 들어가며: Solidity란?
 
 **Solidity**는 이더리움과 같은 EVM(Ethereum Virtual Machine) 기반 블록체인에서 스마트 컨트랙트를 작성하기 위해 만들어진 가장 대표적인 프로그래밍 언어입니다. C++, Python, JavaScript 등 여러 언어의 영향을 받아 정적 타입(statically-typed) 언어로 설계되었습니다.
