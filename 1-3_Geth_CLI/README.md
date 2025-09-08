@@ -215,9 +215,6 @@ admin.peers
 노드1 콘솔에서 노드2로 1 ETH를 전송해보겠습니다:
 
 ```javascript
-// 계정 잠금 해제 (필요시)
-personal.unlockAccount(eth.accounts[0])
-
 // ETH 전송
 eth.sendTransaction({
   from: "NODE_1_SIGNER", 
@@ -228,6 +225,197 @@ eth.sendTransaction({
 // 트랜잭션 확인
 eth.pendingTransactions
 ```
+
+### 5.4 블록 데이터 분석
+
+블록체인의 핵심은 블록(Block)입니다. 실제 블록 데이터를 분석하여 블록체인의 구조를 이해해보겠습니다.
+
+#### 5.4.1 제네시스 블록 분석
+
+```javascript
+// 제네시스 블록(블록 번호 0) 확인
+eth.getBlock(0)
+
+// 더 자세한 정보 확인 (트랜잭션 포함)
+eth.getBlock(0, true)
+```
+
+제네시스 블록의 출력 예시:
+```javascript
+{
+  difficulty: 1,
+  extraData: "0x0000000000000000000000000000000000000000000000000000000000000000a1b2c3...",
+  gasLimit: 8000000,
+  gasUsed: 0,
+  hash: "0x1234567890abcdef...",
+  logsBloom: "0x00000000000000000000...",
+  miner: "0x0000000000000000000000000000000000000000",
+  mixHash: "0x0000000000000000000000000000000000000000000000000000000000000000",
+  nonce: "0x0000000000000000",
+  number: 0,
+  parentHash: "0x0000000000000000000000000000000000000000000000000000000000000000",
+  receiptsRoot: "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
+  size: 540,
+  stateRoot: "0x1234567890abcdef...",
+  timestamp: 1234567890,
+  totalDifficulty: 1,
+  transactions: [],
+  transactionsRoot: "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
+  uncles: []
+}
+```
+
+#### 5.4.2 최신 블록 분석
+
+```javascript
+// 현재 최신 블록 번호 확인
+eth.blockNumber
+
+// 최신 블록 정보 확인
+eth.getBlock("latest")
+
+// 특정 블록 번호로 확인 (예: 블록 5)
+eth.getBlock(5)
+```
+
+#### 5.4.3 블록 헤더 필드 상세 분석
+
+각 필드의 의미를 이해해보겠습니다:
+
+```javascript
+// 특정 블록 분석 (블록 1을 예시로)
+var block = eth.getBlock(1);
+
+// 블록 해시 - 블록의 고유 식별자
+console.log("Block Hash:", block.hash);
+
+// 부모 블록 해시 - 이전 블록과의 연결
+console.log("Parent Hash:", block.parentHash);
+
+// 블록 번호 - 순차적 식별번호
+console.log("Block Number:", block.number);
+
+// 타임스탬프 - 블록 생성 시간
+console.log("Timestamp:", block.timestamp);
+console.log("Human Time:", new Date(block.timestamp * 1000));
+
+// 채굴자 주소 - 이 블록을 생성한 노드
+console.log("Miner:", block.miner);
+
+// 가스 사용량과 한계
+console.log("Gas Used:", block.gasUsed);
+console.log("Gas Limit:", block.gasLimit);
+
+// 트랜잭션 개수
+console.log("Transaction Count:", block.transactions.length);
+```
+
+#### 5.4.4 블록체인 연결 구조 확인
+
+```javascript
+// 블록체인의 연결 구조 확인하기
+function analyzeBlockchain(startBlock, endBlock) {
+  console.log("=== 블록체인 연결 구조 분석 ===");
+  
+  for (let i = startBlock; i <= endBlock; i++) {
+    let block = eth.getBlock(i);
+    let prevBlock = i > 0 ? eth.getBlock(i - 1) : null;
+    
+    console.log(`\n--- 블록 ${i} ---`);
+    console.log(`블록 해시: ${block.hash}`);
+    console.log(`부모 해시: ${block.parentHash}`);
+    
+    if (prevBlock) {
+      console.log(`이전 블록 해시: ${prevBlock.hash}`);
+      console.log(`연결 확인: ${block.parentHash === prevBlock.hash ? "✅ 정상" : "❌ 오류"}`);
+    }
+    
+    console.log(`생성 시간: ${new Date(block.timestamp * 1000)}`);
+    console.log(`트랜잭션 수: ${block.transactions.length}`);
+  }
+}
+
+// 처음 5개 블록 분석
+analyzeBlockchain(0, 4);
+```
+
+#### 5.4.5 트랜잭션이 포함된 블록 분석
+
+트랜잭션을 전송한 후 해당 블록을 분석해보겠습니다:
+
+```javascript
+// 트랜잭션 전송 후
+var txHash = eth.sendTransaction({
+  from: eth.accounts[0], 
+  to: "0x받는주소", 
+  value: web3.toWei(0.5, "ether")
+});
+
+// 트랜잭션이 포함된 블록 찾기
+var receipt = eth.getTransactionReceipt(txHash);
+console.log("트랜잭션이 포함된 블록:", receipt.blockNumber);
+
+// 해당 블록 상세 분석
+var blockWithTx = eth.getBlock(receipt.blockNumber, true);
+console.log("블록 정보:", blockWithTx);
+console.log("포함된 트랜잭션들:", blockWithTx.transactions);
+```
+
+#### 5.4.6 머클 트리와 루트 해시 이해
+
+```javascript
+// 블록의 머클 루트들 확인
+var block = eth.getBlock("latest");
+
+console.log("=== 머클 루트 해시들 ===");
+console.log("State Root:", block.stateRoot);
+console.log("Transactions Root:", block.transactionsRoot);
+console.log("Receipts Root:", block.receiptsRoot);
+
+// 트랜잭션이 있는 블록과 없는 블록의 차이 비교
+console.log("\n=== 빈 블록 vs 트랜잭션 포함 블록 ===");
+var emptyBlock = eth.getBlock(0);
+var blockWithTxs = eth.getBlock("latest");
+
+console.log("빈 블록 트랜잭션 루트:", emptyBlock.transactionsRoot);
+console.log("트랜잭션 블록 트랜잭션 루트:", blockWithTxs.transactionsRoot);
+```
+
+#### 5.4.7 블록 생성 패턴 분석
+
+Clique PoA의 블록 생성 패턴을 확인해보겠습니다:
+
+```javascript
+// 최근 10개 블록의 생성 패턴 분석
+function analyzeBlockTiming() {
+  console.log("=== 블록 생성 패턴 분석 ===");
+  
+  let latestBlock = eth.blockNumber;
+  let startBlock = Math.max(0, latestBlock - 9);
+  
+  for (let i = startBlock; i <= latestBlock; i++) {
+    let block = eth.getBlock(i);
+    let prevBlock = i > 0 ? eth.getBlock(i - 1) : null;
+    
+    let timeDiff = prevBlock ? block.timestamp - prevBlock.timestamp : 0;
+    
+    console.log(`블록 ${i}: ${new Date(block.timestamp * 1000).toLocaleTimeString()}, ` +
+                `간격: ${timeDiff}초, 채굴자: ${block.miner}`);
+  }
+}
+
+analyzeBlockTiming();
+```
+
+### 💡 블록 데이터 분석을 통한 이해
+
+이 실습을 통해 다음 개념들을 실제로 확인할 수 있습니다:
+
+1. **블록체인의 연결 구조**: 각 블록이 이전 블록의 해시를 참조하여 체인을 형성
+2. **머클 트리**: 트랜잭션들을 효율적으로 요약하는 데이터 구조
+3. **블록 헤더**: 블록의 메타데이터와 검증에 필요한 정보들
+4. **합의 메커니즘**: Clique PoA에서 권한을 가진 노드들이 순서대로 블록 생성
+5. **상태 변화**: 트랜잭션 실행으로 인한 계정 잔액 변화가 stateRoot에 반영
 
 ---
 ## 6. 키스토어(Keystore) 파일 분석하기
@@ -351,22 +539,39 @@ Get-Content .\node1\keystore\UTC--2024-...
 - [ ] 키스토어 파일의 구조와 보안 메커니즘
 - [ ] 제네시스 블록과 네트워크 초기화
 - [ ] 노드 간 P2P 통신과 블록 동기화
+- [ ] **블록 구조와 헤더 필드들의 역할**
+- [ ] **블록체인의 연결 구조 (parentHash 기반)**
+- [ ] **머클 트리와 루트 해시의 개념**
+- [ ] **Clique PoA 합의 메커니즘의 블록 생성 패턴**
 
 ✅ **실무적 경험**
 - [ ] 개인 이더리움 네트워크 구축
 - [ ] 다중 노드 환경에서의 트랜잭션 처리
 - [ ] Geth 콘솔을 통한 네트워크 상태 모니터링
 - [ ] 계정 잠금 해제와 트랜잭션 전송
+- [ ] **실제 블록 데이터 조회 및 분석**
+- [ ] **트랜잭션이 블록에 포함되는 과정 관찰**
+- [ ] **블록 생성 타이밍과 채굴자 확인**
+- [ ] **상태 변화 추적 (stateRoot, transactionsRoot)**
+
+✅ **데이터 분석 기술**
+- [ ] **제네시스 블록부터 최신 블록까지의 체인 연결 확인**
+- [ ] **블록 헤더의 각 필드 의미와 용도 파악**
+- [ ] **트랜잭션 포함 전후의 블록 상태 변화 분석**
+- [ ] **JavaScript를 이용한 블록체인 데이터 프로그래밍**
 
 ### 💡 다음 단계 학습 방향
 
 이 실습을 바탕으로 다음 주제들을 학습하실 수 있습니다:
 
 1. **스마트 컨트랙트 배포**: Hardhat과 연동하여 컨트랙트 배포
-2. **Web3 인터페이스**: JavaScript를 통한 블록체인 상호작용
+2. **Web3 인터페이스**: JavaScript를 통한 블록체인 상호작용  
 3. **토큰 생성**: ERC-20/ERC-721 토큰 구현 및 배포
 4. **DApp 개발**: 프론트엔드와 블록체인 연결
 5. **테스트넷 활용**: Sepolia, Goerli 등 공개 테스트넷 사용
+6. **블록체인 분석도구**: Etherscan과 같은 블록 익스플로러 활용
+7. **고급 블록 분석**: 가스 사용량 최적화, MEV 분석
+8. **노드 운영**: 실제 메인넷/테스트넷 노드 동기화 및 운영
 
 ### 🔒 보안 주의사항
 
