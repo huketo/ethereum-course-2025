@@ -310,36 +310,7 @@ console.log("Gas Limit:", block.gasLimit);
 console.log("Transaction Count:", block.transactions.length);
 ```
 
-#### 5.4.4 블록체인 연결 구조 확인
-
-```javascript
-// 블록체인의 연결 구조 확인하기
-function analyzeBlockchain(startBlock, endBlock) {
-  console.log("=== 블록체인 연결 구조 분석 ===");
-  
-  for (let i = startBlock; i <= endBlock; i++) {
-    let block = eth.getBlock(i);
-    let prevBlock = i > 0 ? eth.getBlock(i - 1) : null;
-    
-    console.log(`\n--- 블록 ${i} ---`);
-    console.log(`블록 해시: ${block.hash}`);
-    console.log(`부모 해시: ${block.parentHash}`);
-    
-    if (prevBlock) {
-      console.log(`이전 블록 해시: ${prevBlock.hash}`);
-      console.log(`연결 확인: ${block.parentHash === prevBlock.hash ? "✅ 정상" : "❌ 오류"}`);
-    }
-    
-    console.log(`생성 시간: ${new Date(block.timestamp * 1000)}`);
-    console.log(`트랜잭션 수: ${block.transactions.length}`);
-  }
-}
-
-// 처음 5개 블록 분석
-analyzeBlockchain(0, 4);
-```
-
-#### 5.4.5 트랜잭션이 포함된 블록 분석
+#### 5.4.4 트랜잭션이 포함된 블록 분석
 
 트랜잭션을 전송한 후 해당 블록을 분석해보겠습니다:
 
@@ -361,7 +332,7 @@ console.log("블록 정보:", blockWithTx);
 console.log("포함된 트랜잭션들:", blockWithTx.transactions);
 ```
 
-#### 5.4.6 머클 트리와 루트 해시 이해
+#### 5.4.5 머클 트리와 루트 해시 이해
 
 ```javascript
 // 블록의 머클 루트들 확인
@@ -379,32 +350,6 @@ var blockWithTxs = eth.getBlock("latest");
 
 console.log("빈 블록 트랜잭션 루트:", emptyBlock.transactionsRoot);
 console.log("트랜잭션 블록 트랜잭션 루트:", blockWithTxs.transactionsRoot);
-```
-
-#### 5.4.7 블록 생성 패턴 분석
-
-Clique PoA의 블록 생성 패턴을 확인해보겠습니다:
-
-```javascript
-// 최근 10개 블록의 생성 패턴 분석
-function analyzeBlockTiming() {
-  console.log("=== 블록 생성 패턴 분석 ===");
-  
-  let latestBlock = eth.blockNumber;
-  let startBlock = Math.max(0, latestBlock - 9);
-  
-  for (let i = startBlock; i <= latestBlock; i++) {
-    let block = eth.getBlock(i);
-    let prevBlock = i > 0 ? eth.getBlock(i - 1) : null;
-    
-    let timeDiff = prevBlock ? block.timestamp - prevBlock.timestamp : 0;
-    
-    console.log(`블록 ${i}: ${new Date(block.timestamp * 1000).toLocaleTimeString()}, ` +
-                `간격: ${timeDiff}초, 채굴자: ${block.miner}`);
-  }
-}
-
-analyzeBlockTiming();
 ```
 
 ### 💡 블록 데이터 분석을 통한 이해
