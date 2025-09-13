@@ -9,6 +9,7 @@
 **Ethernaut**는 OpenZeppelin에서 만든 학습 플랫폼으로, 각 레벨마다 특정 취약점을 가진 스마트 컨트랙트가 주어집니다. 우리의 목표는 해당 컨트랙트의 소유권을 탈취하거나, 컨트랙트의 상태를 우리가 원하는 대로 변경하는 것입니다.
 
 > 🎮 **실습 준비**: 브라우저에서 [Ethernaut 공식 홈페이지](https://ethernaut.openzeppelin.com/)에 접속하고, MetaMask 지갑을 Sepolia 테스트넷으로 연결하세요. 각 레벨을 시작하기 위해 소량의 Sepolia ETH가 필요합니다.
+> `Language` 메뉴에서 `한국어`를 선택하면 한글로 된 설명을 볼 수 있습니다.
 
 ---
 
