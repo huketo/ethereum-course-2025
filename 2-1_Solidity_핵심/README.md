@@ -867,10 +867,6 @@ contract PointEmitter {
         if (msg.sender != i_owner) revert NotOwner();
         _;
     }
-
-    function withdraw() public view onlyOwner {
-        // 인출 로직 (이 예제에서는 생략)
-    }
 }
 ```
 
@@ -926,7 +922,12 @@ contract PointEmitter {
     }
 
     function withdraw() public view onlyOwner {
-        // 인출 로직 (이 예제에서는 생략)
+        // 1. 인출할 금액 (컨트랙트의 전체 잔액)
+        uint256 amount = address(this).balance;
+
+        // 2. 소유자에게 ETH 전송
+        (bool success, ) = i_owner.call{value: amount}(""); // call 메소드를 사용하여 ETH 전송
+        require(success, "Failed to send Ether"); // 전송 실패 시 트랜잭션 되돌림, `revert` 일 경우 gas 소모
     }
     
     // 이 컨트랙트에 ETH가 직접 보내지면 contribute 함수를 호출합니다.
