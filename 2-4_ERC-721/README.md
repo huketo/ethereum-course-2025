@@ -8,6 +8,18 @@
 
 ERC-721 표준 덕분에, 모든 NFT는 다양한 마켓플레이스(예: OpenSea), 지갑, 게임 등에서 동일한 방식으로 거래되고 전시될 수 있습니다.
 
+## 학습 목표
+
+- ERC-721 표준의 주요 함수와 이벤트 이해
+- ERC-721이 활용되는 실제 사례 학습
+  - NFT 마켓플레이스
+  - 게임 아이템
+- OpenZeppelin 라이브러리를 활용한 안전한 NFT 컨트랙트 작성법
+- MetaMask 지갑 설치 및 Sepolia 테스트넷 연결
+- Hardhat 로컬 네트워크 및 Sepolia 테스트넷에 NFT 컨트랙트 배포 및 테스트
+  - Alchemy를 활용한 Sepolia 노드 접속법
+  - Etherscan을 활용한 컨트랙트 검증 및 공개
+
 ---
 
 ## 1. ERC-721 표준 해설
@@ -157,3 +169,14 @@ npx hardhat run scripts/deploy.ts --network sepolia
 배포가 성공적으로 완료되면, 터미널에 출력된 컨트랙트 주소를 복사하여 **[Sepolia Etherscan](https://sepolia.etherscan.io/)** 과 같은 블록 탐색기에서 검색해 보세요. 여러분이 방금 배포한 컨트랙트가 전 세계 누구나 볼 수 있는 공개 블록체인 상에 실제로 존재하는 것을 확인할 수 있습니다.
 
 이제 이 컨트랙트의 `safeMint` 함수를 호출하여 나만의 NFT를 발행하고, **[OpenSea 테스트넷](https://testnets.opensea.io/)** 과 같은 마켓플레이스에서 내 지갑에 들어온 NFT를 직접 눈으로 확인할 수 있습니다.
+
+
+## 참고
+
+- [EIP-721: Non-Fungible Token Standard](https://eips.ethereum.org/EIPS/eip-721)
+- [OpenZeppelin Contracts: ERC721](https://docs.openzeppelin.com/contracts/5.x/erc721)
+- [OpenZeppelin Wizard](https://wizard.openzeppelin.com/#erc721)
+- [OpenSea](https://opensea.io/)
+- [Hardhat Verify Docs](https://hardhat.org/docs/learn-more/smart-contract-verification)
+- [Etherscan Sepolia](https://sepolia.etherscan.io/)
+- [Alchemy](https://www.alchemy.com/)
