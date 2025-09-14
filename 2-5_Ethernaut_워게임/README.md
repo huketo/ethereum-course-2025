@@ -19,14 +19,132 @@
 
 ---
 
+## 스마트 컨트랙트 보안의 중요성
+
+### 주요 해킹 사례들
+
+#### 1. The DAO 해킹 (2016년 6월)
+- **피해 규모**: 360만 ETH (당시 약 5천만 달러)
+- **원인**: 재진입(Reentrancy) 공격 취약점
+- **결과**: 하드포크로 이더리움 클래식(ETC) 분리
+
+#### 2. Parity 멀티시그 지갑 버그 (2017년 11월)
+- **피해 규모**: 50만 ETH (당시 약 1.5억 달러) 영구 동결
+- **원인**: 라이브러리 컨트랙트의 초기화되지 않은 상태
+- **결과**: 수많은 사용자 자금이 영구적으로 접근 불가
+
+#### 3. bZx 플래시론 공격 (2020년 2월)
+- **피해 규모**: 약 100만 달러
+- **원인**: 오라클 조작과 플래시론을 이용한 가격 조작
+- **결과**: DeFi 보안에 대한 경각심 증대
+
+### 보안이 중요한 이유
+
+1. **불변성**: 배포된 스마트 컨트랙트는 수정이 거의 불가능
+2. **투명성**: 모든 코드와 거래가 공개되어 공격자가 취약점 분석 가능
+3. **자산 관리**: 실제 가치를 가진 암호화폐를 다룸
+4. **24/7 운영**: 멈추지 않는 시스템으로 공격 시도가 언제든 가능
+5. **합성 가능성**: 여러 프로토콜이 연결되어 복합적 위험 존재
+
+## Ethernaut 워게임 튜토리얼
+
+![Ethernaut Main Page](imgs/ethernaut-main-page.png)
+
+### Hello Ethernaut (레벨 0) 완주 가이드
+
+Ethernaut 워게임을 시작하기 위해서는 먼저 튜토리얼 레벨인 "Hello Ethernaut"을 완료해야 합니다.
+
+#### 1. 초기 설정
+
+1. **브라우저 설정**
+   - Chrome, Firefox, Edge 등 MetaMask를 지원하는 브라우저 사용
+   - [Ethernaut 공식 홈페이지](https://ethernaut.openzeppelin.com/) 접속
+
+2. **MetaMask 지갑 연결**
+   - MetaMask 확장 프로그램 설치 및 지갑 생성
+   - 네트워크를 **Sepolia 테스트넷**으로 변경
+   - [Sepolia Faucet](https://sepoliafaucet.com/)에서 테스트 ETH 받기 (0.5 ETH 정도면 충분)
+
+3. **언어 설정**
+   - 우측 상단의 `Language` 메뉴에서 `한국어` 선택
+
+#### 2. Hello Ethernaut 레벨 시작
+
+![Hello Ethernaut Level](imgs/BigLevel0.svg)
+
+1. **레벨 선택**
+   - 메인 페이지에서 "0. Hello Ethernaut" 클릭
+   - "Get new instance" 버튼 클릭하여 개인 인스턴스 생성
+   - MetaMask에서 트랜잭션 승인 (가스비 지불)
+
+2. **개발자 도구 열기**
+   - F12 키를 눌러 브라우저 개발자 도구 열기
+   - `Console` 탭으로 이동
+
+#### 3. 단계별 실습
+
+각 단계는 브라우저 콘솔에서 JavaScript 명령어를 실행합니다.
+
+```javascript
+// 1. help() 명령어로 사용 가능한 명령어 확인
+help()
+
+// 2. 플레이어 주소 확인
+player
+
+// 3. 컨트랙트 인스턴스 확인
+contract
+
+// 4. 컨트랙트의 정보 조회
+await contract.info()
+
+// 5. info1() 메소드 호출
+await contract.info1()
+
+// 6. info2("hello") 메소드 호출
+await contract.info2("hello")
+
+// 7. infoNum() 메소드 호출
+await contract.infoNum()
+
+// 8. info42() 메소드 호출
+await contract.info42()
+
+// 9. theMethodName() 메소드 호출
+await contract.theMethodName()
+
+// 10. method7123949() 메소드 호출
+await contract.method7123949()
+
+// 11. 패스워드 확인
+await contract.password()
+
+// 12. authenticate() 메소드에 패스워드 전달
+await contract.authenticate("ethernaut0")
+```
+
+#### 4. 레벨 완료
+
+1. **인스턴스 제출**
+   - 모든 단계를 완료한 후 "Submit instance" 버튼 클릭
+   - MetaMask에서 트랜잭션 승인
+   - 성공 메시지 확인
+
+2. **다음 레벨로**
+   - 완료 후 다음 레벨들을 순차적으로 도전
+   - 각 레벨마다 새로운 보안 취약점을 학습
+
+
 ## Level 1. Fallback
 
-### **목표**
+![Fallback Level](imgs/BigLevel1.svg)
+
+### 목표
 
 1.  컨트랙트의 소유권을 탈취합니다.
 2.  컨트랙트의 잔액을 0으로 만듭니다.
 
-### **취약점 분석**
+### 취약점 분석
 
 주어진 `Fallback` 컨트랙트의 코드를 살펴봅시다.
 
@@ -72,14 +190,14 @@ contract Fallback {
 -   **`receive()` 함수**: 이더리움에서 컨트랙트로 데이터(calldata) 없이 이더만 전송될 때 호출되는 특별한 함수입니다. 이 컨트랙트의 `receive` 함수에는 치명적인 로직이 있습니다.
     -   `require(msg.value > 0 && contributions[msg.sender] > 0)`: 0보다 큰 금액을 보내고, 이전에 한 번이라도 기여한 적이 있다면, `owner = msg.sender;` 즉, **소유권이 즉시 공격자에게 넘어옵니다!**
 
-### **공격 시나리오**
+### 공격 시나리오
 
 1.  **`contribute()` 호출**: `receive` 함수의 두 번째 조건(`contributions[msg.sender] > 0`)을 만족시키기 위해, 아주 적은 양의 이더(예: 0.0001 ETH)를 담아 `contribute()` 함수를 호출합니다.
 2.  **`receive()` 트리거**: 데이터 없이, 0보다 큰 이더(예: 0.0001 ETH)를 컨트랙트 주소로 직접 전송합니다. MetaMask의 '보내기' 기능을 사용하면 됩니다. 이더가 전송되면 `receive()` 함수가 자동으로 호출됩니다.
 3.  **소유권 탈취**: `receive()` 함수의 `require` 문을 통과하고, 컨트랙트의 `owner`가 공격자의 주소로 변경됩니다.
 4.  **자금 인출**: 이제 `owner`가 되었으므로, `withdraw()` 함수를 호출하여 컨트랙트에 남아있는 모든 이더를 인출합니다.
 
-### **방어 방법**
+### 방어 방법
 
 -   `fallback` 또는 `receive` 함수에는 매우 신중하게 로직을 작성해야 합니다. 특히 상태를 변경하는 로직(예: 소유권 변경)은 절대로 포함해서는 안 됩니다.
 -   만약 이더를 받는 기능만 구현하고 싶다면, `receive() external payable {}` 처럼 함수 본문을 비워두는 것이 안전합니다.
@@ -88,11 +206,13 @@ contract Fallback {
 
 ## Level 3. Coin Flip
 
-### **목표**
+![Coin Flip Level](imgs/BigLevel3.svg)
+
+### 목표
 
 동전 뒤집기 게임에서 10번 연속으로 이겨야 합니다.
 
-### **취약점 분석**
+### 취약점 분석
 
 ```solidity
 contract CoinFlip {
@@ -116,7 +236,7 @@ contract CoinFlip {
 -   **예측 가능한 난수**: 이 컨트랙트는 동전의 앞/뒤를 결정하기 위해 `block.blockhash(block.number - 1)` 값을 사용합니다. `blockhash`는 이전 블록의 해시값으로, 블록체인 상에 공개되어 있는 데이터입니다. 즉, **결과값이 나오기 전에 누구나 미리 예측할 수 있는 값**이라는 의미입니다.
 -   블록체인은 결정론적(deterministic) 시스템이기 때문에, 컨트랙트 내부에서 `block.timestamp`, `block.number`, `block.blockhash` 등과 같은 변수만을 사용하여 안전한 난수를 생성하는 것은 불가능합니다.
 
-### **공격 시나리오**
+### 공격 시나리오
 
 1.  **공격용 스마트 컨트랙트 작성**: `CoinFlip` 컨트랙트와 동일한 로직으로 동전의 면을 계산하는 함수를 가진 별도의 공격 컨트랙트를 작성합니다.
 
@@ -139,7 +259,7 @@ contract CoinFlip {
 2.  **공격 컨트랙트 배포**: 작성한 `AttackCoinFlip` 컨트랙트를 Sepolia 테스트넷에 배포합니다.
 3.  **공격 실행**: 배포된 공격 컨트랙트의 `attack()` 함수를 10번 호출합니다. `attack()` 함수는 다음 블록이 채굴되기 전에 `CoinFlip` 컨트랙트와 동일한 방법으로 결과를 예측하고, 그 예측값을 `flip()` 함수에 전달합니다. 이 모든 과정이 하나의 트랜잭션 안에서 일어나므로, `block.number`는 동일하게 유지되어 예측은 100% 성공하게 됩니다.
 
-### **방어 방법**
+### 방어 방법
 
 -   블록체인 상에서 안전한 난수가 필요할 때는 **체인링크(Chainlink) VRF(Verifiable Random Function)** 와 같은 외부 오라클(Oracle) 서비스를 사용해야 합니다. 오라클은 블록체인 외부에서 생성된 검증 가능한 난수를 안전하게 컨트랙트로 전달해 줍니다.
 
@@ -147,11 +267,13 @@ contract CoinFlip {
 
 ## Level 5. Token
 
-### **목표**
+![Token Level](imgs/BigLevel5.svg)
+
+### 목표
 
 아주 적은 양의 토큰으로 시작하여, 컨트랙트가 보유한 모든 토큰을 탈취합니다.
 
-### **취약점 분석**
+### 취약점 분석
 
 ```solidity
 contract Token {
@@ -177,14 +299,14 @@ contract Token {
     -   `require(balances[msg.sender] - _value >= 0);`: `balances[msg.sender]`는 `uint` (부호 없는 정수) 타입입니다. `uint`는 항상 0 이상이므로, 이 `require` 문은 `balances[msg.sender]`가 `_value`보다 작을 때도 항상 `true`를 반환하게 되어 아무런 방어 역할을 하지 못합니다.
     -   만약 공격자가 보유한 토큰(예: 20개)보다 더 많은 양(예: 21개)을 전송하려고 하면, `balances[msg.sender] -= _value;` 라인에서 언더플로우가 발생합니다. 즉, `20 - 21`의 결과가 `-1`이 되는 대신, `uint` 타입의 최댓값에 가까운 아주 큰 숫자가 되어버립니다.
 
-### **공격 시나리오**
+### 공격 시나리오
 
 1.  **초기 상태**: 공격자는 20개의 토큰을 가지고 있습니다.
 2.  **언더플로우 공격**: 공격자는 `transfer()` 함수를 호출하여, 자신이 가지고 있지 않은 임의의 주소(아무 주소나 상관없음)로 21개의 토큰을 보냅니다.
 3.  **잔액 변경**: `balances[msg.sender] -= 21;` 이 실행되면서, 공격자의 잔액은 `20 - 21`의 결과로 언더플로우가 발생하여 `uint`의 최댓값에 가까운 엄청나게 큰 숫자로 변합니다.
 4.  **토큰 탈취**: 이제 공격자는 사실상 무한대에 가까운 토큰을 보유하게 되었으므로, `totalSupply` 만큼의 토큰을 자신의 다른 계정으로 전송하여 컨트랙트의 모든 토큰을 탈취할 수 있습니다.
 
-### **방어 방법**
+### 방어 방법
 
 -   **Solidity 0.8.0 이상 버전 사용**: Solidity 0.8.0 버전부터는 컴파일러가 산술 오버플로우/언더플로우를 자동으로 감지하고 방지해 줍니다. 덧셈, 뺄셈 등의 연산에서 오버/언더플로우가 발생하면 트랜잭션이 자동으로 되돌려집니다.
 -   **SafeMath 라이브러리 사용 (구버전)**: 0.8.0 미만 버전에서는 OpenZeppelin의 `SafeMath` 라이브러리를 사용하여 모든 산술 연산을 `add()`, `sub()`, `mul()`, `div()` 함수로 대체해야 합니다. 이 라이브러리는 오버/언더플로우 발생 시 `require` 문을 통해 실행을 중단시킵니다.
