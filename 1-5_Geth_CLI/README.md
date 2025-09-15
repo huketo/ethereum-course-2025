@@ -34,7 +34,7 @@
 
 ```powershell
 # Geth 버전 확인
-geth version
+geth --version
 ```
 
 버전 정보가 정상적으로 출력된다면 설치가 성공한 것입니다.
