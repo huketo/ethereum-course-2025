@@ -15,7 +15,8 @@
 
 실습을 시작하기 전에 다음 도구들을 설치해주세요:
 
-- **Geth 설치**: https://geth.ethereum.org/downloads
+- **Geth 설치 (v1.13.15)**: https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.13.15-c5ba367e.exe
+  - v1.14 이상 버전은 PoA 미지원
   - 환경변수 PATH에 Geth 설치 경로 추가 필요
 - **Windows Terminal** (권장): https://aka.ms/terminal
 - **PowerShell 7 이상** (권장): https://aka.ms/powershell
@@ -78,6 +79,8 @@ geth account new --datadir ./node2
 # Public address of the key: <복사해두세요>
 ```
 
+-> password는 node1/password.txt, node2/password.txt 파일에 저장해둡니다.
+
 ### 💡 계정 생성 과정에서 일어나는 일들
 
 이 명령어들을 실행하면 Geth는 다음과 같은 과정을 거칩니다:
@@ -99,7 +102,6 @@ geth account new --datadir ./node2
 {
   "config": {
     "chainId": 7788,
-    "terminalTotalDifficulty": 0,
     "homesteadBlock": 0,
     "eip150Block": 0,
     "eip155Block": 0,
@@ -108,7 +110,11 @@ geth account new --datadir ./node2
     "constantinopleBlock": 0,
     "petersburgBlock": 0,
     "istanbulBlock": 0,
+    "muirGlacierBlock": 0,
     "berlinBlock": 0,
+    "londonBlock": 0,
+    "arrowGlacierBlock": 0,
+    "grayGlacierBlock": 0,
     "clique": {
       "period": 5,
       "epoch": 30000
@@ -118,15 +124,14 @@ geth account new --datadir ./node2
   "gasLimit": "8000000",
   "extraData": "0x0000000000000000000000000000000000000000000000000000000000000000ACCOUNT1_ADDRESS_NO_0xACCOUNT2_ADDRESS_NO_0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
   "alloc": {
-    "ACCOUNT1_ADDRESS_WITH_0x": { "balance": "500000000000000000000" },
-    "ACCOUNT2_ADDRESS_WITH_0x": { "balance": "500000000000000000000" }
+    "ACCOUNT1_ADDRESS_NO_0x": { "balance": "500000000000000000000" },
+    "ACCOUNT2_ADDRESS_NO_0x": { "balance": "500000000000000000000" }
   }
 }
 ```
 
 > 🔧 **중요한 수정 사항**: 
 > - `ACCOUNT1_ADDRESS_NO_0x`와 `ACCOUNT2_ADDRESS_NO_0x` 부분을 복사해 둔 두 계정의 주소로 바꾸세요. **반드시 맨 앞의 0x를 제거해야 합니다.**
-> - `ACCOUNT1_ADDRESS_WITH_0x`와 `ACCOUNT2_ADDRESS_WITH_0x` 부분은 0x를 포함한 전체 주소로 교체합니다.
 
 ### 💡 extraData 필드 이해하기
 
@@ -160,8 +165,8 @@ geth --datadir .\node2 init genesis.json
 첫 번째 PowerShell 창에서:
 
 ```powershell
-# NODE_1_SIGNER를 실제 node1의 주소로 변경
-geth --datadir .\node1 --networkid 7788 --port 30303 --http --http.port 8545 --miner.etherbase "NODE_1_SIGNER"
+# YOUR_NODE1_SIGNER_ADDRESS를 실제 node1의 주소로 변경
+geth --datadir node1 --networkid 7788 --port 30303 --http --http.port 8545 --authrpc.port 8551 --allow-insecure-unlock --unlock "YOUR_NODE1_SIGNER_ADDRESS" --password ./node1/password.txt --mine --miner.etherbase "YOUR_NODE1_SIGNER_ADDRESS"
 ```
 
 ### 4.3 노드2 실행
@@ -169,9 +174,9 @@ geth --datadir .\node1 --networkid 7788 --port 30303 --http --http.port 8545 --m
 두 번째 PowerShell 창에서:
 
 ```powershell
-# NODE_2_SIGNER를 실제 node2의 주소로 변경
+# YOUR_NODE2_SIGNER_ADDRESS를 실제 node2의 주소로 변경
 # enode 주소는 노드1 실행 후 콘솔에서 확인 가능
-geth --datadir .\node2 --networkid 7788 --port 30304 --http --http.port 8546 --unlock "NODE_2_SIGNER" --password node2 --mine --miner.etherbase "NODE_2_SIGNER" --bootnodes "enode://노드1의_enode_주소@127.0.0.1:30303" --ipcpath geth2.ipc --authrpc.port 8552 --allow-insecure-unlock
+geth --datadir node2 --networkid 7788 --port 30304 --http --http.port 8546 --authrpc.port 8552 --allow-insecure-unlock --unlock "YOUR_NODE2_SIGNER_ADDRESS" --password ./node2/password.txt --mine --miner.etherbase "YOUR_NODE2_SIGNER_ADDRESS" --bootnodes "YOUR_NODE1_ENODE_ADDRESS" --ipcpath geth2.ipc
 ```
 
 ---
